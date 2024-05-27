@@ -1,0 +1,400 @@
+<app-loading *ngIf="loading"> </app-loading>
+
+<div class="container mt-3" *ngIf="!loading">
+
+    <section id="header">
+        <div class="row">
+            <div class="col h1">Carga de productos</div>
+            <hr>
+        </div>
+
+        <div class="row text-end">
+            <div class="col">
+                <button class="btn btn-danger" [routerLink]="['/psm',perfil.id]">
+                    <i class="fa fa-arrow-left"></i> Regresar
+                    </button>
+            </div>
+        </div>
+    </section>
+
+
+    <form (ngSubmit)="guardar(f)" #f="ngForm">
+        <section id="cabecera">
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Área:</label>
+                        <input type="text" class="form-control" placeholder="Área requerida" [(ngModel)]="articulo.area" name="area">
+                    </div>
+                </div>
+
+
+                <div class="col">
+                    <div class="form-group">
+                        <label>Procedimiento:</label>
+                        <select class="form-select" [(ngModel)]="articulo.procedimiento" name="procedimiento">
+                            <option selected value="">Seleccione un procedimieto</option>
+                            <option *ngFor="let procedimiento of procedimientos" [value]="procedimiento.value">{{procedimiento.nombre}}</option> 
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="form-group">
+                        <label>Aplicación:</label>
+                        <select class="form-select" (change)="selecAplicacion(mySelect.value)" #mySelect [(ngModel)]="articulo.aplicacion" name="aplicacion">
+                            <option selected value="">Seleccione una aplicación</option>
+                            <option *ngFor="let aplicacion of aplicaciones" [value]="aplicacion.value">{{aplicacion.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Equipo:</label>
+                        <input type="text" class="form-control" placeholder="Equipo" [(ngModel)]="articulo.equipo" name="equipo">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="Desengrasantes" *ngIf="!intervencion">
+
+            <div class="row bg-danger text-white mt-3 mb-2">
+                <div class="col">
+                    <h3>Desengrasantes</h3>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>Producto:</label>
+                        <select class="form-select" (change)="getPrecio(des.value)" #des [(ngModel)]="articulo.desengrasante.codigo" name="desengrasante">
+                            <option selected value="">Seleccione un producto</option>
+                            <option *ngFor="let p of desengrasantes" value="{{p.codigo}}"> {{p.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Precio Lista:</label>
+                        <input type="number" class="form-control text-end" readonly value="{{precioListaDesengrasante}}">
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Precio x kilo:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.desengrasante.precio_kilo" name="desen_precio_kilo">
+                    </div>
+                </div>
+
+                <div class="col-2" *ngIf="!lavanderia">
+                    <div class="form-group">
+                        <label>Eventos x Mes:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.desengrasante.eventos_mes" name="desen_evento_mes">
+                    </div>
+                </div>
+
+                <div class="col-2" *ngIf="lavanderia">
+                    <div class="form-group">
+                        <label>Días operación:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.desengrasante.eventos_mes" name="desen_dias_oper">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-3" *ngIf=" !lavanderia ">
+                    <label>% Dilución:</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" [(ngModel)]="articulo.desengrasante.dilucion" name="desen_dilucion">
+                    </div>
+                </div>
+
+                <div class="col-2 " *ngIf="lavanderia ">
+                    <div class="form-group ">
+                        <label>ml o g / Carga:</label>
+                        <input type="number " class="form-control " [(ngModel)]="articulo.desengrasante.ml_g" name="desen_ml">
+                    </div>
+                </div>
+
+                <div class="col-2 " *ngIf="!lavanderia ">
+                    <div class="form-group ">
+                        <label>Gasto solución:</label>
+                        <input type="number " class="form-control" [(ngModel)]="articulo.desengrasante.gasto_solucion" name="desen_gasto_solucion">
+                    </div>
+                </div>
+
+                <div class="col-2 " *ngIf="lavanderia ">
+                    <div class="form-group ">
+                        <label>Pzas / Carga:</label>
+                        <input type="number" class="form-control ">
+                    </div>
+                </div>
+
+                <div class="col-2 " *ngIf="lavanderia">
+                    <div class="form-group ">
+                        <label>Pzas / Día:</label>
+                        <input type="number" class="form-control ">
+                    </div>
+                </div>
+
+                <div class="col-2 " *ngIf="lavanderia">
+                    <div class="form-group ">
+                        <label>Cargas * Día:</label>
+                        <input type="number" class="form-control " [(ngModel)]="articulo.desengrasante.carga_dia" name="desen_carga_dia">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="Desincrustante " *ngIf="!lavanderia">
+
+            <div class="row bg-warning mt-3 mb-3 ">
+                <div class="col ">
+                    <h3>Desincrustante</h3>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>Producto:</label>
+                        <select class="form-select" (change)="getPrecioDesincrustante(desc.value)" #desc [(ngModel)]="articulo.desincrustante.codigo" name="desincrustante">
+                            <option selected value="">Seleccione un producto</option>
+                            <option *ngFor="let p of desincrustante" value="{{p.codigo}}">{{p.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Precio Lista:</label>
+                        <input type="number" class="form-control text-end" readonly value="{{precioListaDesincrustante}}">
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Precio x kilo:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.desincrustante.precio_kilo" name="desc_precio_kilo">
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Eventos x Mes:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.desincrustante.eventos_mes" name="desc_eventos_mes">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <label>% Dilución:</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" [(ngModel)]="articulo.desincrustante.dilucion" name="desc_dilucion">
+                    </div>
+                </div>
+
+                <div class="col-2 ">
+                    <div class="form-group ">
+                        <label>Gasto solución:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.desincrustante.gasto_solucion" name="desc_gasto_solucion">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="Sanitizantes" *ngIf="!intervencion">
+
+            <div class="row bg-primary text-white mt-3 mb-2">
+                <div class="col">
+                    <h3>Sanitizantes</h3>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>Producto:</label>
+                        <select class="form-select" (change)="getPrecioSanitizante(san.value)" #san [(ngModel)]="articulo.sanitizante.codigo" name="san_codigo">
+                            <option selected value="">Seleccione un producto</option>
+                            <option *ngFor="let p of sanitizantes" value="{{p.codigo}}">{{p.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Precio Lista:</label>
+                        <input type="text" class="form-control text-end" readonly value="{{precioListaSAnitizante}}">
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Precio x kilo:</label>
+                        <input type="text" class="form-control" [(ngModel)]="articulo.sanitizante.precio_kilo" name="san_precio_kilo">
+                    </div>
+                </div>
+
+                <div class="col-2" *ngIf="!lavanderia">
+                    <div class="form-group">
+                        <label>Eventos x Mes:</label>
+                        <input type="text" class="form-control" [(ngModel)]="articulo.sanitizante.eventos_mes" name="san_evento_mes">
+                    </div>
+                </div>
+
+                <div class="col-2" *ngIf="lavanderia">
+                    <div class="form-group">
+                        <label>Días operación:</label>
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-2" *ngIf=" !lavanderia ">
+                    <div class="form-group ">
+                        <label>Concentración PPM:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.sanitizante.concentracion" name="san_concentracion">
+                    </div>
+                </div>
+
+
+                <div class="col-2 " *ngIf="lavanderia ">
+                    <div class="form-group ">
+                        <label>ml o g / Carga:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.sanitizante.ml_g" name="san_ml">
+                    </div>
+                </div>
+
+
+                <div class="col-2 " *ngIf="!lavanderia ">
+                    <div class="form-group ">
+                        <label>Gasto solución:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.sanitizante.gasto_solucion" name="san_gasto_solucion">
+                    </div>
+                </div>
+
+                <div class="col-2 " *ngIf="lavanderia ">
+                    <div class="form-group ">
+                        <label>Pzas / Carga:</label>
+                        <input type="number " class="form-control ">
+                    </div>
+                </div>
+
+                <div class="col-2 " *ngIf="lavanderia">
+                    <div class="form-group ">
+                        <label>Pzas / Día:</label>
+                        <input type="number" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-2 " *ngIf="lavanderia">
+                    <div class="form-group ">
+                        <label>Cargas * Día:</label>
+                        <input type="number" class="form-control " [(ngModel)]="articulo.sanitizante.cargas_dia" name="san_carga_dia">
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group ">
+                        <label>PA:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.sanitizante.pa" name="san_pa">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="Sanitizantes-MP" *ngIf="intervencion">
+
+            <div class="row bg-primary text-white mt-3 mb-2">
+                <div class="col">
+                    <h3>Sanitizantes</h3>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>Producto:</label>
+                        <select class="form-select" (change)="getPrecioSanitizante(san.value)" #san [(ngModel)]="articulo.sanitizante.codigo" name="san_codigo2">
+                            <option selected value="">Seleccione un producto</option>
+                            <option *ngFor="let p of sanitizantes" value="{{p.codigo}}">{{p.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Precio Lista:</label>
+                        <input type="text" class="form-control text-end" readonly value="{{precioListaSAnitizante}}">
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Precio x kilo:</label>
+                        <input type="text" class="form-control" [(ngModel)]="articulo.sanitizante.precio_kilo" name="san_precio_kilo2">
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-group">
+                        <label>Eventos x Mes:</label>
+                        <input type="text" class="form-control" [(ngModel)]="articulo.sanitizante.eventos_mes" name="san_evento_mes2">
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <div class="form-group ">
+                        <label>Concentración PPM:</label>
+                        <input type="number" class="form-control" [(ngModel)]="articulo.sanitizante.concentracion" name="san_concentracion2">
+                    </div>
+                </div>
+
+                <div class="col-2 ">
+                    <div class="form-group ">
+                        <label>Gasto solución:</label>
+                        <input type="text " class="form-control" [(ngModel)]="articulo.sanitizante.gasto_solucion" name="san_gasto_solucion2">
+                    </div>
+                </div>
+
+                <div class="col-8 text-end pt-2">
+                    <input class="form-check-input me-2" type="checkbox" value="">
+                    <label class="form-check-label">
+                            Aplicación directa
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <div class="row">
+            <div class="col text-end">
+                <button type="submit" class="btn btn-outline-primary btn-lg">
+                    <i class="fa fa-save"></i> Guardar </button>
+            </div>
+        </div>
+
+    </form>
+
+</div>

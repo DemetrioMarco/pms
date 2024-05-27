@@ -1,0 +1,15 @@
+table {
+    table-layout: fixed;
+}
+
+thead tr th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #ffffff;
+}
+
+#col-w th {
+    width: 150px;
+    overflow: auto;
+}

@@ -1,0 +1,433 @@
+<div class="container">
+
+    <div class="row pt-3">
+        <div class="col-1">
+            <button class="btn btn-outline-primary" routerLink="'/home"><i class="fa fa-home"></i></button>
+        </div>
+
+        <div class="col-3">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Código socio" aria-describedby="inputGroup-sizing-sm" #buscarCod>
+                <button class="btn btn-outline-secondary" type="button" id="inputGroup-sizing-sm" (click)="buscarSocioCod(buscarCod.value)">Buscar</button>
+            </div>
+        </div>
+
+        <div class="col-8" *ngIf="sociosSel.length != 0">
+            <select class="form-select" (change)="cargarNumero(cod.value)" #cod>
+                <option selected value="">Seleccione un nombre</option>
+                <option *ngFor="let soc of sociosSel" [value]="soc.numeroSocioNegocio" >{{soc.numeroSocioNegocio}} - {{soc.razonSocial}} - {{soc.sucursal}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">{{ perfil.id }}</div>
+        <div class="col">{{ perfil.sucursal }}</div>
+    </div>
+
+    <form (ngSubmit)="guardar(f)" id="htmlData" #f="ngForm">
+
+        <!-- cabecera -->
+        <section>
+            <div class="row">
+                <div class="col text-end">
+                    <label><small>DNS-FO-005</small></label>
+                </div>
+            </div>
+            <div class="row text-center bg-primary text-light">
+                <div class="col-12">
+                    <h1>Perfil Del Cliente</h1>
+                </div>
+            </div>
+            <div class="row" *ngIf="perfil.fecha !== ''">
+                <div class="col-sm-12 text-end">
+                    <label>Fecha de actualización: <strong>{{ perfil.fecha | date:'longDate' }}</strong></label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Datos clientes -->
+        <section class="pt-3">
+            <div class="mb-2 row">
+                <label class="col-sm-3 col-form-label">Nombre socio de Negocios:</label>
+                <div class="col-sm-9">
+
+                    <input type="text" class="form-control" [(ngModel)]="perfil.socio" name="socio" required disabled="disabled" [class.is-invalid]="socioValido">
+                </div>
+            </div>
+
+            <div class="mb-2 row">
+                <div class="col-sm-3">
+                    <div class="form-check form-check-inline">
+
+                        <input class="form-check-input" type="radio" [(ngModel)]="perfil.cliente_prospecto" name="cliente_prospecto" value="C" disabled [class.is-invalid]="socioValido">
+                        <label class="form-check-label">Cliente</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+
+                        <input class="form-check-input" type="radio" [(ngModel)]="perfil.cliente_prospecto" name="cliente_prospecto" value="L" disabled [class.is-invalid]="socioValido">
+                        <label class="form-check-label">Prospecto</label>
+                    </div>
+                </div>
+                <label class="col-sm-3 col-form-label">Número Cliente o Prospecto:</label>
+                <div class="col-sm-6">
+
+                    <input type="text" class="form-control" [(ngModel)]="perfil.cod" name="cod" disabled [class.is-invalid]="socioValido" required>
+                </div>
+            </div>
+
+            <div class="mb-2 row">
+                <label class="col-sm-3 col-form-label">Nombre consultor:</label>
+                <div class="col-sm-9">
+
+                    <input type="text" class="form-control" [(ngModel)]="perfil.consultor" name="consultor" required [class.is-invalid]="consultorValido">
+                </div>
+            </div>
+
+            <div class="mb-2 row">
+                <label class="col-sm-auto col-form-label">Giro:</label>
+                <div class="col-sm-3 ms-0 ps-0">
+                    <select class="form-select form-select-sm" [(ngModel)]="perfil.giro" name="giro">
+                        <option selected value="">Seleccione un giro</option>
+                        <option *ngFor="let giro of giros" [value]="giro.value">{{giro.nombre}}</option>
+                    </select>
+                </div>
+
+                <label class="col-sm-auto col-form-label ">Rubro:</label>
+                <div class="col-sm-3">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.rubro " name="rubro ">
+                </div>
+
+                <label class="col-sm-auto col-form-label ">Total de empleados:</label>
+                <div class="col-sm-1">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.totalEmpleados " name="totalEmpleado ">
+                </div>
+
+                <label class="col-sm-auto text-end col-form-label me-0 ">Días Laborales:</label>
+                <div class="col-sm-1 text-end">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.diasLaborales " name="diasLaborales ">
+                </div>
+
+            </div>
+
+            <div class="mb-2 row ">
+                <label class="col-sm-3 col-form-label ">Producción (ton/mes):</label>
+                <div class="col-sm-2 ">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.produccion " name="produccion ">
+                </div>
+
+                <label class="col-sm-4 col-form-label text-end ">Costo de Producción (mxn/ton):</label>
+                <div class="col-sm-3 ">
+
+                    <input type="text " class="form-control " [(ngModel)]="perfil.costoProduccion " name="costoProduccion ">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Costo de Sanidad -->
+        <section>
+
+            <div class="row bg-primary mb-2 ">
+                <div class="col-12 ">
+                    <h6 class="text-light mt-2 ">Costo de sanidad</h6>
+                </div>
+            </div>
+
+            <div class="mb-2 row ">
+                <label class="col-sm-3 col-form-label ">Costo de químico (mxn):</label>
+                <div class="col-sm-3 ">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.costoQuimico " name="costoQuimico ">
+                </div>
+
+                <label class="col-sm-4 col-form-label text-end ">Cuadrilla de Sanidad (Personal):</label>
+                <div class="col-sm-2 ">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.cuadrillaSanidad " name="cuadrillaSanidad ">
+                </div>
+            </div>
+
+            <div class="mb-2 row ">
+                <label class="col-sm-4 col-form-label ">Costo Mano de obra (MO)(mxn):</label>
+                <div class="col-sm-2 ">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.costoMO " name="costoMO ">
+                </div>
+
+                <label class="col-sm-3 col-form-label text-end ">Turnos laborables:</label>
+                <div class="col-sm-3 ">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.turnosLaborales " name="turnosLaborales ">
+                </div>
+            </div>
+
+            <div class="mb-2 row ">
+                <label class="col-sm-3 col-form-label ">Accesorios(mxn):</label>
+                <div class="col-sm-3 ">
+                    <input type="text " class="form-control " [(ngModel)]="perfil.accesorias " name="accesorios ">
+                </div>
+            </div>
+        </section>
+
+        <!-- DANS -->
+        <section>
+            <div class="row ">
+                <div class="col-12 bg-primary ">
+                    <h6 class="text-light mt-2 ">DANS</h6>
+                </div>
+            </div>
+
+            <!-- Dinero -->
+            <div class="card row ">
+                <div class="row g-0 ">
+                    <div class="col-md-2 abs-center ">
+                        <h6 class="fw-light ">Dinero</h6>
+                    </div>
+                    <div class="col-md-10 ">
+                        <div class="card-body ">
+                            <div class="row mb-2 ">
+                                <label class="col-sm-4 col-form-label ">1. Presupuesto asignado:</label>
+                                <div class="col-sm-8 ">
+                                    <input type="text " class="form-control " [(ngModel)]="perfil.presupuestoAsignado " name="presupuestoAsignado ">
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <label class="col-sm-5 col-form-label ">2. Potencial de Venta Estimado (PVE):</label>
+                                <div class="col-sm-7 ">
+                                    <input type="text " class="form-control text-end " [ngModel]=" perfil.pve | number " name="pve " disabled="disabled ">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Autoridad -->
+            <div class="card row ">
+                <div class="row g-0 ">
+                    <div class="col-md-2 abs-center ">
+                        <h6 class="fw-light ">Autoridad</h6>
+                    </div>
+                    <div class="col-md-10 ">
+                        <div class="card-body ">
+                            <div class="row ">
+                                <label class="col-sm-5 col-form-label ">1. ¿Quién toma la decisión de compra?:</label>
+                                <div class="col-sm-7 ">
+                                    <input type="text " class="form-control " [(ngModel)]="perfil.desicionCompra " name="desicionCompra ">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Necesidad -->
+            <div class="card row ">
+                <div class="row g-0 ">
+                    <div class="col-md-2 abs-center ">
+                        <h6 class="fw-light">Necesidades</h6>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body">
+                            <div class="mb-3 row">
+                                <label class="col-sm-4 col-form-label">1. Principal preocupación/necesidad:</label>
+                                <div class="col-sm-8 ">
+                                    <textarea cols="70 " rows="4" class="form-control" [(ngModel)]="perfil.preocupacionNecesidad " name="preocupacionNecesidad "></textarea>
+                                </div>
+                            </div>
+
+                            <div class="mb-2 row">
+                                <div class="col-5">
+                                    <label>2. Existe alguna referencia de clientes internos</label>
+                                </div>
+                                <div class="form-check form-switch col-2">
+                                    <input class="form-check-input" type="checkbox" for="checkReferencia" role="switch" (change)="tieneReferencia=! tieneReferencia">
+                                </div>
+                            </div>
+                            <div class="mb-2 row" *ngIf="tieneReferencia">
+                                <label class="col-sm-1 col-form-label text-end pe-0">¿Cuales?:</label>
+                                <div class="col-sm-11">
+                                    <input type="text" class="form-control" [(ngModel)]="perfil.referenciaCliente" name="referenciaCliente ">
+                                </div>
+                            </div>
+
+                            <div class="mb-2 row ">
+                                <div class="col-5 ">
+                                    <label>3. ¿Maneja marcas conocidas?</label>
+                                </div>
+                                <div class="form-check form-switch col-2">
+                                    <input class="form-check-input " type="checkbox" for="checkReferencia" role="switch" (change)="tieneMarcas=! tieneMarcas ">
+                                </div>
+                            </div>
+                            <div class="mb-2 row " *ngIf="tieneMarcas ">
+                                <label class="col-sm-1 col-form-label text-end pe-0 ">¿Cuales?:</label>
+                                <div class="col-sm-11 ">
+                                    <input type="text " class="form-control" [(ngModel)]="perfil.marcasConocidad " name="marcasConocidas ">
+                                </div>
+                            </div>
+
+                            <div class="mb-2 row ">
+                                <div class="col-5 ">
+                                    <label>4. ¿Es socio de alguno de nuestros clientes?</label>
+                                </div>
+                                <div class="form-check form-switch col-2">
+                                    <input class="form-check-input" type="checkbox" for="checkReferencia" role="switch" (change)="tieneSocio=! tieneSocio">
+                                </div>
+                            </div>
+                            <div class="row " *ngIf="tieneSocio">
+                                <label class="col-sm-1 col-form-label text-end pe-0">¿Cuales?:</label>
+                                <div class="col-sm-11 ">
+                                    <input type="text" class="form-control" [(ngModel)]="perfil.socioCliente" name="socioCliente">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sanidad -->
+            <div class="card row ">
+                <div class="row g-0 ">
+                    <div class="col-md-2 abs-center ">
+                        <h6 class="fw-light ">Sanidad</h6>
+                    </div>
+                    <div class="col-md-10 ">
+                        <div class="card-body ">
+                            <div class="mb-2 row ">
+                                <label class="col-sm-4 col-form-label ">1. Procesos y métodos de limpieza de mayor venta para ROSMAR:</label>
+                                <div class="col-sm-8 ">
+                                    <textarea rows="2" class="form-control " [(ngModel)]="perfil.procesoLimpieza " name="procesoLimpieza "></textarea>
+                                </div>
+                            </div>
+                            <div class="mb-2 row ">
+                                <label class="col-sm-4 col-form-label ">2. Proveedor de limpieza actual:</label>
+                                <div class="col-sm-8 ">
+                                    <input type="text " class="form-control " [(ngModel)]="perfil.proveedorLimpieza " name="proveedorLimpieza ">
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <label class="col-sm-12 col-form-label ">3. ¿Tiene implementado algún sistema de inocuidad y/o calidad, ¿Cuál?:</label>
+                            </div>
+                            <div class="mb-2 row ">
+                                <div class="col-sm-12 ">
+                                    <div class="form-check form-check-inline" *ngFor="let sistema of sistemas">
+                                        <label>
+                                            <input class="form-check-input" type="checkbox" [value]="sistema.value" (change)="onCheckboxSistemas($event) " [checked]="perfil.sistemaInocuidadCalidad.indexOf(sistema.value)>= 0"> {{sistema.nombre}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-2 row ">
+                                <label class="col-sm-1 col-form-label ">Otro:</label>
+                                <div class="col-sm-11 ">
+                                    <input type="text " class="form-control" [(ngModel)]="perfil.otro" name="otro">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="card row ">
+                <div class="row g-0 ">
+                    <div class="col-md-2 abs-center ">
+                        <h6 class="fw-light ">Observaciones</h6>
+                    </div>
+                    <div class="col-md-10 ">
+                        <div class="card-body ">
+                            <div class="row ">
+                                <div class="col-sm-12 ">
+                                    <textarea name=" " id=" " rows="5 " class="form-control" [(ngModel)]="perfil.observaciones" name="observaciones"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Perfil del comprador -->
+        <section>
+            <div class="row bg-primary text-light ">
+                <div class="col-12 ">
+                    <h6 class="mt-2 ">Perfil del comprador</h6>
+                </div>
+            </div>
+
+            <div class="mb-3 mt-3 row ">
+                <label class="col-sm-1 col-form-label ">Perfil:</label>
+                <div class="col-sm-11 mt-1 ">
+                    <div class="form-check form-check-inline" *ngFor="let p of perfiles">
+                        <input class="form-check-input " type="radio" [value]="p.value" [(ngModel)]="perfil.perfil" name="perfil">
+                        <label class="form-check-label ">{{p.nombre}}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row ">
+                <label class="col-sm-1 col-form-label ">Estrategia:</label>
+                <div class="col-sm-11 ">
+                    <textarea class="form-control" rows="5" [(ngModel)]="perfil.estrategia" name="estrategia"></textarea>
+                </div>
+            </div>
+        </section>
+
+    </form>
+
+    <!-- Botonera -->
+    <section>
+        <div class="row mt-4 mb-4">
+            <div class="col-4" *ngIf="perfil.id">
+                <button class="btn btn-outline-danger d-block w-100" (click)="downloadPDF()">
+                    <i class="fa fa-file-pdf"></i> Generar PDF
+                </button>
+            </div>
+            <div class="col-4" *ngIf="perfil.id">
+                <button class="btn btn-outline-success d-block w-100" [routerLink]="['/psm',perfil.id]">
+                    <i class="fa fa-file-excel"></i> 
+                    Crear PMS
+                    <i class="fa fa-table" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="col-4">
+                <button type="submit" class="btn btn-outline-primary d-block w-100" (click)="guardar(f)" *ngIf="perfil.sucursal.length > 0">
+                    <i class="fa fa-save"></i>
+                    Guardar
+                </button>
+
+                <button type="button" class="btn btn-outline-primary d-block w-100" data-bs-toggle="modal" data-bs-target="#sucursalModal" *ngIf="perfil.sucursal.length === 0">
+                    <i class="fa fa-save"></i>
+                    Guardar sucursal
+                </button>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="sucursalModal" tabindex="-1" aria-labelledby="sucursalModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sucursalModalLabel">Seleccione Sucursal para guardar Perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <select class="form-select" [(ngModel)]="perfil.sucursal" name="sucursal">
+                        <option selected value="">Seleccione una sucursal </option>
+                        <option *ngFor="let sucursal of sucursales" [value]="sucursal.Sucursal">{{sucursal.Sucursal}}</option>
+                    </select>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary" (click)="guardar(f)" data-bs-dismiss="modal">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

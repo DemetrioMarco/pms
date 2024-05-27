@@ -1,0 +1,13 @@
+.abs-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-primary {
+    background: #15397F !important;
+}
+
+textarea {
+    resize: none;
+}

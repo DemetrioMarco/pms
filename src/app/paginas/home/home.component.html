@@ -1,0 +1,66 @@
+<div class="container pt-4">
+    <div class="row">
+        <div class="col text-end">
+            <button class="btn btn-primary" routerLink="/perfil/nuevo">
+                <i class="fa fa-plus"></i>
+                Nuevo</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" *ngIf="perfiles.length !== 0 || cargando">
+
+    <div class="row pt-4">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Código Socio</th>
+                        <th scope="col" class="text-center">Socio de Negocio</th>
+                        <th scope="col">Consultor</th>
+                        <th scope="col">Sucursal</th>
+                        <th scope="col" class="text-center">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let perfil of perfiles; let i = index">
+                        <th scope="row">{{ i + 1 }}</th>
+                        <td>{{ perfil.cod}}</td>
+                        <td>{{ perfil.socio}}</td>
+                        <td>{{ perfil.consultor}}</td>
+                        <td>{{ perfil.sucursal}}</td>
+                        <td class="text-center">
+                            <button class="btn btn-primary" [routerLink]="['/perfil',perfil.id ]"> <i class="fa fa-pen"></i> </button>
+                            <!-- <button class="btn btn-danger ms-3" (click)="borrarPerfil(perfil,i)"> <i class="fa fa-trash"></i> </button> -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row alert alert-info text-center mt-3" *ngIf="cargando">
+        <div class="col">
+            <h4 class="alert-heading"> Cargando</h4>
+            <p>
+                <i class="fa fa-sync-alt fa-spin fa-2x"></i>
+            </p>
+            <p class="mb-0">
+                Espere por favor
+            </p>
+        </div>
+    </div>
+
+    <div class="alert alert-warning text-center mt-3" *ngIf="perfiles.length === 0">
+        <h4 class="alert-heading">No hay registro</h4>
+        <p>
+            <i class="fa fa-exclamation fa-2x"></i>
+        </p>
+        <p class="mb-0">
+            Espere por favor </p>
+    </div>
+</div>

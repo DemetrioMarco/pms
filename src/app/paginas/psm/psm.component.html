@@ -1,0 +1,356 @@
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-3">
+            <h1>Lista de PMS</h1>
+        </div>
+        <div class="col align-bottom">{{ perfil.id }}</div>
+        <hr>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            <label>Cliente: <strong>{{ perfil.socio }}</strong></label>
+        </div>
+        <div class="col-2">
+            <label>Sucursal: <strong>{{ perfil.sucursal }}</strong></label>
+        </div>
+        <div class="col-3">
+            <label>Asesor: <strong>{{ perfil.consultor }}</strong></label>
+        </div>
+
+        <div class="col-3">
+            <label>Fecha Actualización: <strong><small>{{ perfil.fecha | date:'longDate' }}</small></strong></label>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col text-star">
+            <div class="btn btn-danger" [routerLink]="['/perfil',perfil.id]">
+                <i class="fa fa-arrow-left"></i> Regresar
+            </div>
+        </div>
+        <div class="col text-center">
+            <button class="btn btn-success" title="Propuesta por Área" (click)="presupuestoPorArea()" data-bs-toggle="modal" data-bs-target="#ModalPropuestaArea">
+                <i class="fa fa-layer-group"></i>
+            </button>
+        </div>
+        <div class="col text-center">
+            <button class="btn btn-success" title="Propuesta por producto" (click)="presupuestoPorProductos()" data-bs-toggle="modal" data-bs-target="#ModalPropuestaProducto">
+                <i class="fa-brands fa-product-hunt"></i>
+            </button>
+        </div>
+        <div class="col text-center">
+            <button class="btn btn-success" title="Propuesta por Área/Producto" (click)="presupuestoAreaProducto()" data-bs-toggle="modal" data-bs-target="#ModalPropuestaAreaProducto">
+                <i class="fa fa-layer-group"></i> / <i class="fa-brands fa-product-hunt"></i>
+            </button>
+        </div>
+        <div class="col text-end">
+            <div class="btn btn-primary" [routerLink]="['/pms',perfil.id]">
+                <i class="fa fa-plus"></i> Agregar
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-3" *ngIf="articulos.length !== 0">
+    <div class="row">
+        <div class="col table-responsive  px-0">
+
+            <table class="table table-striped">
+                <thead class="text-center">
+                    <tr id="col-w">
+                        <th class="align-middle border">Área</th>
+                        <th class="align-middle border">Equipo</th>
+                        <th class="align-middle border">Procedimiento</th>
+                        <th class="align-middle border">Aplicación</th>
+
+                        <th class="align-middle bg-danger text-white text-end"> Producto </th>
+                        <th class="align-middle bg-danger text-white"></th>
+                        <th class="align-middle bg-danger text-white">Preparación de la Solución</th>
+                        <th class="align-middle bg-danger text-white">Gasto Solución (L)</th>
+                        <th class="align-middle bg-danger text-white">Repetición x Mes</th>
+                        <th class="align-middle bg-danger text-white">Gasto solución Mensual (L)</th>
+                        <th class="align-middle bg-danger text-white">Gasto Mensual Producto (Kg)</th>
+                        <th class="align-middle bg-danger text-white">Costo Mensual Total ($)</th>
+
+                        <th class="bg-warning align-middle">Producto</th>
+                        <th class="bg-warning align-middle"></th>
+                        <th class="bg-warning align-middle">Preparación de la Solución</th>
+                        <th class="bg-warning align-middle">Gasto Solución (L)</th>
+                        <th class="bg-warning align-middle">Repetición x Mes</th>
+                        <th class="bg-warning align-middle">Gasto solución Mensual (L)</th>
+                        <th class="bg-warning align-middle">Gasto Mensual Producto (Kg)</th>
+                        <th class="bg-warning align-middle">Costo Mensual Total ($)</th>
+
+                        <th class="bg-primary align-middle text-light">Producto</th>
+                        <th class="bg-primary align-middle text-light"></th>
+                        <th class="bg-primary align-middle text-light">Preparación de la Solución</th>
+                        <th class="bg-primary align-middle text-light">Gasto Solución (L)</th>
+                        <th class="bg-primary align-middle text-light">Repetición x Mes</th>
+                        <th class="bg-primary align-middle text-light">Gasto solución Mensual (L)</th>
+                        <th class="bg-primary align-middle text-light">Gasto Mensual Producto (Kg)</th>
+                        <th class="bg-primary align-middle text-light">Costo Mensual Total ($)</th>
+
+                        <th class="align-middle border">Acciones</th>
+                    </tr>
+                    <!-- <tr>
+                        <th colspan="4" class="border"></th>
+                        <th colspan="8" class="bg-danger text-light fs-6">Desengrasante</th>
+                        <th colspan="8" class="bg-warning">Desincrustante</th>
+                        <th colspan="8" class="bg-primary text-light">Sanitizante</th>
+                        <th></th>
+                    </tr> -->
+                </thead>
+
+                <tbody class="text-center">
+                    <tr *ngFor="let item of articulos; let i = index">
+                        <td>{{item.area | uppercase}}</td>
+                        <td>
+                            <button *ngIf="item.equipo.length > 25" type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#equiposModal" (click)="datosModal(item.equipo)">
+                                Equipos
+                            </button>
+                            <label *ngIf="item.equipo.length < 25">
+                                {{item.equipo}}
+                            </label>
+                        </td>
+                        <td>{{item.procedimiento}}</td>
+                        <td>{{item.aplicacion}}</td>
+
+                        <td colspan="2" class="text-start">{{item.desengrasante.descripcion | uppercase }}</td>
+                        <td>{{ item.desengrasante.preparacion| percent }}</td>
+                        <td>{{item.desengrasante.gasto_solucion }}</td>
+                        <td>{{item.desengrasante.eventos_mes }}</td>
+                        <td>{{item.desengrasante.gasto_sol_mensual| number }}</td>
+                        <td>{{item.desengrasante.gasto_mensual_producto| number }}</td>
+                        <td>${{item.desengrasante.costo_mensual| number:'.2-2'}}</td>
+
+                        <td colspan="2" class="text-start">{{item.desincrustante.descripcion | uppercase }}</td>
+                        <td>{{ item.desincrustante.preparacion| percent }}</td>
+                        <td>{{item.desincrustante.gasto_solucion }}</td>
+                        <td>{{item.desincrustante.eventos_mes }}</td>
+                        <td>{{item.desincrustante.gasto_sol_mensual| number }}</td>
+                        <td>{{item.desincrustante.gasto_mensual_producto| number }}</td>
+                        <td>${{item.desincrustante.costo_mensual| number:'.2-2'}}</td>
+
+                        <td colspan="2" class="text-start">{{item.sanitizante.descripcion | uppercase }}</td>
+                        <td>{{item.sanitizante.preparacion| percent }}</td>
+                        <td>{{item.sanitizante.concentracion }}</td>
+                        <td>{{item.sanitizante.eventos_mes }}</td>
+                        <td>{{item.sanitizante.gasto_sol_mensual| number }}</td>
+                        <td>{{item.sanitizante.gasto_mensual_producto| number }}</td>
+                        <td>${{item.sanitizante.costo_mensual| number:'.2-2'}}</td>
+
+                        <td>
+                            <button class="btn me-3 p-0" [routerLink]="['/pms',perfil.id]" (click)="enviarArticulos(item.id!)">
+                                <i class="fa fa-pen text-primary"></i>
+                            </button>
+                            <button class="btn  p-0" (click)="eliminarArticulo(perfil.id!, item.area, i)">
+                                 <i class="fa fa-trash text-danger" aria-hidden="true"></i> 
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tfoot class="tbody">
+                    <tr>
+                        <td colspan="11" class="text-end">Total Desengrasante:</td>
+                        <td class="text-center fw-bold">${{totalDesengrasante | number:'.2-2' }}</td>
+                        <td colspan="7" class="text-end">Total Desincrustante:</td>
+                        <td class="text-center fw-bold">${{totalDesincrustante | number:'.2-2' }}</td>
+                        <td colspan="7" class="text-end">Total Sanitizante:</td>
+                        <td class="text-center fw-bold">${{totalSanitizante| number:'.2-2' }}</td>
+                        <td class="text-end fw-bold">${{totalDesengrasante + totalDesincrustante + totalSanitizante | number:'.2-2'}}</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="alert alert-warning text-center mt-3" *ngIf="articulos.length === 0">
+        <h4 class="alert-heading">No hay registro</h4>
+        <p>
+            <i class="fa fa-exclamation fa-2x"></i>
+        </p>
+        <p class="mb-0">
+            Espere por favor
+        </p>
+    </div>
+    <div class="alert alert-info text-center mt-3" *ngIf="false">
+        <h4 class="alert-heading">Cargando</h4>
+        <p>
+            <i class="fa fa-sync-alt fa-spin fa-2x"></i>
+        </p>
+        <p class="mb-0">
+            Espere por favor
+        </p>
+    </div>
+</div>
+
+
+<!-- Modal Equipos -->
+<div class="modal fade" id="equiposModal" tabindex="-1" aria-labelledby="modalEquiposLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEquiposLabel">Equipos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ equipos }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="ModalPropuestaArea" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Presupuesto por área
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Área</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of propPorArea">
+                            <td class="text-start">{{item.area | uppercase}}</td>
+                            <td class="text-end">${{item.Total | number:'.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="text-end">
+                            <td>Total General</td>
+                            <td class="fw-bold">${{totalArea | number }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalPropuestaProducto" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Presupuesto por producto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Gasto Mensual (Kg)</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of propPorProducto">
+                            <td class="text-start">{{item.producto | uppercase}}</td>
+                            <td class="text-end">{{item.Kg | number:'.2-2' }}</td>
+                            <td class="text-end">{{item.Costo | number:'.2-2' }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="text-end">
+                            <td colspan="2">Total General</td>
+                            <td class="fw-bold">${{ totalProductos | number }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalPropuestaAreaProducto" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Presupuesto por área/producto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr id="col-w">
+                            <th class="align-middle">Área</th>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Gasto Mensual (kg)</th>
+                            <th>Costo Mensual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of propAreaProducto">
+                            <td> {{item.Area | uppercase }} </td>
+                            <td>
+                                <table>
+                                    <tr *ngFor="let p of item.Producto">
+                                        <td>{{p.descripcion}}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table>
+                                    <tr *ngFor="let p of item.Producto">
+                                        <td>${{p.precio | number }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table>
+                                    <tr *ngFor="let p of item.Producto" class="text-end">
+                                        <td>{{p.Gasto_Mensual | number:'.2-2'}}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table>
+                                    <tr *ngFor="let p of item.Producto">
+                                        <td>${{p.Costo_Mensual | number:'.2-2' }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-end">Total General</td>
+                            <td class="fw-bold">${{ totalAreaProducto | number }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
