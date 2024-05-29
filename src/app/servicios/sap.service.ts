@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -8,22 +8,29 @@ import { map } from 'rxjs/operators';
 })
 export class SapService {
 
+    private _serviceUrl: string = 'http://35.174.29.99/ServiciosSAP/api/';
+    private headers = new HttpHeaders()
+    .set('Access-Control-Allow-Origin', '*')
+    .set('Access-Control-Allow-Headers','Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
+    .set('Access-Control-Allow-Methods','GET')
+    .set('Allow','GET');
+
     constructor( private http: HttpClient){
     }
 
-    getSociosNegocio():Observable<any>{
-        return this.http.get('http://35.174.29.99/ServiciosSAP/api/Socio');
+    getSociosNegocio(): Observable<any>{
+        return this.http.get(`${ this._serviceUrl }Socio`, { headers: this.headers });
     }
 
     getProductos():Observable<any>{
-        return this.http.get('http://35.174.29.99/ServiciosSAP/api/Precios');
+        return this.http.get(`${ this._serviceUrl }Precios`, { headers: this.headers });
                     // .pipe(
                     //     map( this.crearArreglo )
                     // );
     }
 
     getSucursales():Observable<any>{
-        return this.http.get('http://35.174.29.99/ServiciosSAP/api/Sucursales');
+        return this.http.get(`${ this._serviceUrl }Sucursales`, { headers: this.headers });
     }
 
     // private crearArreglo( productosObj: any){

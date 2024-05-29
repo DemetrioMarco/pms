@@ -46,7 +46,7 @@ export class PerfilComponent implements OnInit {
 
     this._serviceSap.getSucursales().subscribe( sucursal => {
       this.sucursales = sucursal;
-      this.sucursales.push({'Sucursal': 'IMPLEMENTACIÓN'});
+      this.sucursales.push({'sucursal': 'IMPLEMENTACIÓN'});
     });
     
   }
