@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 })
 export class SapService {
 
-    private _serviceUrl: string = 'http://35.174.29.99';
+    private _serviceUrl: string = 'https://35.174.29.99';
     // private headers = new HttpHeaders()
     // .set('Access-Control-Allow-Origin', '*')
     // .set('Access-Control-Allow-Headers','Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
