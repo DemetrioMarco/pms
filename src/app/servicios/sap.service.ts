@@ -9,17 +9,17 @@ import { map } from 'rxjs/operators';
 export class SapService {
 
     private _serviceUrl: string = 'https://35.174.29.99';
-    // private headers = new HttpHeaders()
-    // .set('Access-Control-Allow-Origin', '*')
-    // .set('Access-Control-Allow-Headers','Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
-    // .set('Access-Control-Allow-Methods','GET')
-    // .set('Allow','GET');
+    private headers = new HttpHeaders()
+    .set('Access-Control-Allow-Origin', '*')
+    .set('Access-Control-Allow-Headers','Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
+    .set('Access-Control-Allow-Methods','GET')
+    .set('Allow','GET');
 
     constructor( private http: HttpClient){
     }
 
     getSociosNegocio(): Observable<any>{
-        return this.http.get(`${ this._serviceUrl }/ServiciosSAP/api/Socio`);
+        return this.http.get(`${ this._serviceUrl }/ServiciosSAP/api/Socio`, {headers: this.headers});
     }
 
     getProductos():Observable<any>{
